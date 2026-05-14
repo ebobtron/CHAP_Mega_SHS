@@ -1,2 +1,7 @@
-# CHAP_Mega_SHS
+# CHAP\_Mega\_SHS
+
 Smart Home System
+1st I have not idea what I am doing.
+
+
+
