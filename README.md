@@ -2,7 +2,8 @@
 
 ## Smart Home System
 
-1st I have no idea what I am doing.
+1st I have no idea what I am doing. Bare with me please as I relearn thus git
+thingy.
 
 This project uses the following componets
 - Arduino Mega2560 clone
