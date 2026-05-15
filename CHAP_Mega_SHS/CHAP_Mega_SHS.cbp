@@ -542,7 +542,8 @@
 			<Add option="-Wl,--gc-sections" />
 		</Linker>
 		<Unit filename="../CHAP_Mega_SHS.ino" />
-		<Unit filename="../Display_Setup.h" />
+		<Unit filename="../Display.h" />
+		<Unit filename="../README.md" />
 		<Unit filename="../src/Display.cpp" />
 		<Extensions />
 	</Project>
