@@ -16,7 +16,6 @@ struct lamp {
   bool state;  // on or off
 };
 
-
 void Display_Setup();
 
 void displayFauxClock(uint32_t tick);   // 86400 seconds in a day
