@@ -9,5 +9,5 @@ This project uses the following componets
 - Arduino Mega2560 clone
   - inland Mega 2560 R3 CH340
 - MAR4018 Arduino Display Mega2560 NT35510
-  - [LCDWIKI]{https://www.lcdwiki.com/4.0inch_Arduino_Display-Mega2560_NT35510}
+  - [LCDWIKI]{https://www.lcdwiki.com/4.0inch%20Arduino%20Display-Mega2560%20NT35510}
 

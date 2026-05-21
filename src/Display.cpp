@@ -19,6 +19,8 @@
 // Remember to set the pins to suit your display module!
 
 
+#include "../Display.h"
+
 #include <LCDWIKI_GUI.h>  // Core graphics library
 #include <LCDWIKI_KBV.h>  // Hardware-specific display
 
@@ -31,7 +33,6 @@ LCDWIKI_KBV my_lcd(
          41              // RESET PIN
 );
 
-#include "../Display.h"
 
 bool on = true, off = false;
 
@@ -41,8 +42,12 @@ bool on = true, off = false;
 lamp L1 = {.x = 770, .y = 30, .r = 12, .state = off};
 lamp L2 = {.x = 480, .y = 30, .r = 12, .state = off};
 
-
-void Display_Setup() {
+void Display_Setup(
+    uint8_t screen,
+    uint8_t background,
+    uint16_t textcolor,
+    uint8_t textsize
+) {
 
   my_lcd.Init_LCD();
   // rotation relative to how display pixels are loaded
@@ -50,10 +55,11 @@ void Display_Setup() {
                            //                    1 top to bottom
                            //                    2 right to left
                            //                    3 bottom to top
-  my_lcd.Fill_Screen(0);
-  my_lcd.Set_Text_Back_colour(0);
-  my_lcd.Set_Text_colour(65535);     // white
-  my_lcd.Set_Text_Size(8);
+
+  my_lcd.Fill_Screen(screen);
+  my_lcd.Set_Text_Back_colour(background);
+  my_lcd.Set_Text_colour(textcolor);     // white
+  my_lcd.Set_Text_Size(textsize);
 
   // my_lcd.Write_Cmd(0x11);
   // my_lcd.Write_Data(0x44);
@@ -136,3 +142,15 @@ void displayFauxClock(uint32_t tick) {  // 86400 seconds in a day
 void displayLoops(uint32_t loops) {  // 86400
   my_lcd.Print_Number_Int(loops, 40, 240, 9, '0', /* 8, 10 or 16 */ 10);
 }
+
+void displayString(String st) {
+  my_lcd.Print_String(st, 40, 350);
+}
+
+void displayClock(uint8_t hour, uint8_t minutes, uint8_t seconds, bool h12) {
+  char time[9];
+  snprintf(time, sizeof(time), "%02u:%02u:%02u", hour, minutes, seconds);
+  String timestring = String(time);
+  displayString(timestring);
+}
+

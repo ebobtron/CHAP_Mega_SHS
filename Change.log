@@ -1,0 +1,16 @@
+## Change Log
+
+  May 21, 2026
+  1. Changed displayed text size to 4
+  2. Moved some setting to Display.h from Display.cpp
+       Fill Screen - black
+       Back Ground Color - black
+       Text Color - white
+       Text Size - 4
+  3. Removed unneeded code from main sketch .ino
+  4. Edited comments and code in display.h
+  5. Edited link in Read me file
+  6. added RTC.h file for Real Time Clock
+  7. added faux clock display code in Display.h and Display.cpp
+  
+  ~  fix spelling and syntax errors in comments
