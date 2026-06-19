@@ -1,5 +1,5 @@
 
-/*  Display.cpp  */
+/* ----- Display.cpp ----- */
 
 // Display definitions and implementations for Papa's CHAP(Computer Home
 // Automation Project) Smart Home System using  the Arduino Mega2560
@@ -18,29 +18,21 @@
 
 // Remember to set the pins to suit your display module!
 
-
+#ifndef DISPLAY_H
 #include "../Display.h"
+#endif // DISPLAY_H
 
 #include <LCDWIKI_GUI.h>  // Core graphics library
 #include <LCDWIKI_KBV.h>  // Hardware-specific display
 
 LCDWIKI_KBV my_lcd(
-    NT35510,             // model
+    NT35510,             // model / display driver IC
          40,             // CS PIN
          38,             // CD PIN
          39,             // WR PIN
          43,             // RD PIN
          41              // RESET PIN
 );
-
-
-bool on = true, off = false;
-
-
-// initilize lamp controler Icons
-
-lamp L1 = {.x = 770, .y = 30, .r = 12, .state = off};
-lamp L2 = {.x = 480, .y = 30, .r = 12, .state = off};
 
 void Display_Setup(
     uint8_t screen,
@@ -50,84 +42,113 @@ void Display_Setup(
 ) {
 
   my_lcd.Init_LCD();
-  // rotation relative to how display pixels are loaded
+  // rotation relative to how display pixels are drawn
   my_lcd.Set_Rotation(1);  // rotation default = 0 left to right
                            //                    1 top to bottom
                            //                    2 right to left
                            //                    3 bottom to top
 
+  my_lcd.Set_Draw_color(0xce79);  // gray
   my_lcd.Fill_Screen(screen);
   my_lcd.Set_Text_Back_colour(background);
   my_lcd.Set_Text_colour(textcolor);     // white
   my_lcd.Set_Text_Size(textsize);
 
-  // my_lcd.Write_Cmd(0x11);
-  // my_lcd.Write_Data(0x44);
-  // my_lcd.Write_Cmd(0x51);   // Write Display Brightness
-  // my_lcd.Write_Data(0x88);  // 0x88 50% brightness (0x00 = Off, 0xFF = Max)
-
   uint8_t lineWidth = 1;       // drawn line width
   uint8_t footpixels = 20;     // one foot = 20 pixels, 20 pixels per foot
-                               // one inch = 1.67 pixels per foot
-
+                               // one inch = 1.67 pixels per inch
   uint8_t stairWidth = 45 /* inches */ / 12 * 20;
   uint8_t newelPost = 69 /* inches */ / 12 * 20;
-  my_lcd.Set_Draw_color(0xce79);  // gray
-    // 31 = max blue, equivilent to R(0)-G(0)-B(255)
 
-  // draw 1st floor
-  for (uint8_t i = 0; i < lineWidth; i++) {  // redraw for line width
-
-    my_lcd.Draw_Round_Rectangle(
-        800 - 480 + i,  // starting x for outer walls
-        0 + i,          // starting y for outer walls
-        799 - i,        // ending x for outer walls
-        479 - i,        // ending y for outer walls
-        20 - i          // corner radius
-    );
-    // draw stair chase
-    my_lcd.Draw_Fast_VLine(
-        800 - 480 + stairWidth + i,  // x start position
-        newelPost,                   // y start position
-        round(8 * 16.7) + lineWidth  // line length
-    );
-
-    for (uint8_t j = 0; j <= 8; j++) {  // draw stairs to 2nd floor
-
-      my_lcd.Draw_Fast_HLine(
-          320,
-          newelPost + 16.7 * j + i,  // 10 inches * 1.67
-          stairWidth
-      );
-    }
-
-    // draw center east west wall thin
-    my_lcd.Draw_Rectangle(
-        800 - 480 + stairWidth + i,
-        newelPost + round(8 * 16.7) + lineWidth,
-        799 - lineWidth,
-        newelPost + 144/* see#3 */ + lineWidth
-    );
-
-    /*
-     *  #3  value 144 = round(8 * 16.7) + round(6 * 1.67)
-     *
-     *
-     */
+}
 
 
-    my_lcd.Draw_Circle(L1.x, L1.y, L1.r);  // draw gray circle
-    my_lcd.Draw_Circle(L2.x, L2.y, L2.r);  // draw gray circle
+void DrawObjects(           // must I explain  ??
+    dobjlist DOL,   // item to draw
+    uint16_t  x,    // horizontal position   0 - 799
+    uint16_t  y,    // vertical position     0 - 479
+    uint16_t x2,    // horizontal end position
+    uint16_t y2,    // vertical end position
+    uint8_t   w,    // line width pixels
+    uint16_t  r,    // radius value circle or corner in pixels
+    uint16_t  l,    // length in pixels
+    bool state      // item displayed on or off
+) {
 
-    /*
-    my_lcd.Set_Draw_color(my_lcd.Color_To_565(255, 255, 0)); // color to yellow
-    my_lcd.Fill_Circle(480, 30, 12);   // draw a filled circle
-    my_lcd.Set_Draw_color(my_lcd.Color_To_565(0, 0, 0));  // color to black
-    my_lcd.Fill_Circle(480, 30, 12);   // draw over yellow circle with black
+/*
+  DRAW_PIXEL,
+  DRAW_FAST_VLINE,
+  DRAW_FAST_HLINE,
+  DRAW_LINE,
+  DRAW_RECTANGLE,
+  DRAW_ROUND_RECTANGLE,
+  DRAW_CIRCLE,          // Draw_Circle(int16_t x, int16_t y, int16_t radius);
+  DRAW_CIRCLE_HELPER,
+  DRAW_TRIANGLE,
+  DRAW_BITMAP,
+  DRAW_CHAR,
+  FIRST_F_OUTLINE,
+  STAIR_CASE,
+  STAIRS,
+  WALL_DIVIDER,
+  LAMP_1,
+  LAMP_2,
+  END
+*/
 
-    my_lcd.Set_Draw_color(0xce79);   // color to gray
-    my_lcd.Draw_Circle(480, 30, 12);   // draw the gray circle
-    */
+  bool on = true, off = false;
+
+  switch(DOL) {
+    case DRAW_CIRCLE:
+      if (state != on) {
+        my_lcd.Set_Draw_color(0, 0, 0);
+        my_lcd.Fill_Circle(x, y, r + 8);
+        my_lcd.Set_Draw_color(255, 255, 255);
+        my_lcd.Draw_Circle(x, y, r);
+      }
+      else {
+        my_lcd.Set_Draw_color(255, 140, 0);
+        my_lcd.Fill_Circle(x, y, r);
+        my_lcd.Draw_Circle(x, y, r + 4);
+        my_lcd.Draw_Circle(x, y, r + 8);
+        my_lcd.Set_Draw_color(255, 255, 255);
+      }
+      break;
+    case DRAW_PIXEL:
+      break;
+    case DRAW_FAST_VLINE:
+      for (uint8_t i = 0; i < w; i++) {  // redraw for line width
+        my_lcd.Draw_Fast_VLine(x + i, y, l);
+      }
+      break;
+    case DRAW_FAST_HLINE:
+      for (uint8_t i = 0; i < w; i++) {  // redraw for line width
+        my_lcd.Draw_Fast_HLine(x, y + i, l);
+      }
+      break;
+    case DRAW_LINE:
+      break;
+    case DRAW_RECTANGLE:
+      for (uint8_t i = 0; i < w; i++) {  // redraw for line width
+        my_lcd.Draw_Rectangle(x + i, y + i, x2 - i, y2 - i);
+      }
+      break;
+    case sayhello:
+      my_lcd.Print_String("Hello", 44, 40);
+      break;
+    case DRAW_ROUND_RECTANGLE:  // round corner rectangle
+      for (uint8_t i = 0; i < w; i++) {  // redraw for line width
+        my_lcd.Draw_Round_Rectangle(
+          x + i,    // starting x for outer walls
+          y + i,    // starting y for outer walls
+          x2 - i,   // ending x for outer walls
+          y2 - i,   // ending y for outer walls
+          r - i     // corner radius
+        );
+      }
+      break;
+    default:
+      my_lcd.Print_String("Bye-bye", 44, 40);
 
   }
 }

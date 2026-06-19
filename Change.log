@@ -1,5 +1,11 @@
 ## Change Log
 
+  June 19, 2026
+  1. Major changes though out. Project continues to grow.
+     Display screen shows blinking lighting symbols.
+
+
+
   May 21, 2026
   1. Changed displayed text size to 4
   2. Moved some setting to Display.h from Display.cpp
@@ -12,5 +18,5 @@
   5. Edited link in Read me file
   6. added RTC.h file for Real Time Clock
   7. added faux clock display code in Display.h and Display.cpp
-  
+
   ~  fix spelling and syntax errors in comments
